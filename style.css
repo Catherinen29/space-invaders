@@ -1,6 +1,7 @@
-.canvas {
-    width: 600px;
-    height: 600px;
+body{
+    text-align: center;
+}
+#canvas {
     display: block;
     margin: 5rem auto;
     background-color: black;
