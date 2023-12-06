@@ -5,9 +5,28 @@ const ctx = canvas.getContext('2d')
 
 // Ship
 ctx.fillStyle = 'red'
-
 let shipX = 250
-ctx.fillRect(shipX, 570, 100, 20) // x, y coords on canvas, width, height
+let shipY = 570
+ctx.fillRect(shipX, shipY, 100, 20) // x, y coords on canvas, width, height
+
+class Bullet {
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+
+        this.width = 20
+        this.height = 20
+        this.color = 'yellow'
+        console.log('CREATED')
+    }
+
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+    }
+}
+
+let bullet = new Bullet(shipX + 40, 550);
 
 // Animation
 function display() {
@@ -18,6 +37,9 @@ function display() {
     ctx.fillStyle = 'red'
     ctx.fillRect(shipX, 570, 100, 20)
 
+    if (bullet) {
+        bullet.draw()
+    }
     window.requestAnimationFrame(display)
 }
 window.requestAnimationFrame(display)
@@ -26,15 +48,18 @@ window.requestAnimationFrame(display)
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'ArrowLeft': 
-            if (shipX >= 20) {
-                shipX -= 30
+            if (shipX >= 10) {
+                shipX -= 10
+                // console.log('shipX left', shipX)
             }
         break;
 
         case 'ArrowRight':
-            if (shipX <= 480){
-            shipX += 30
+            if (shipX <= 490){
+            shipX += 10
+            // console.log('shipX right', shipX)
         }
+        break;
     }
 
 })
