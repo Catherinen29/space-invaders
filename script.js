@@ -23,10 +23,18 @@ class Bullet {
     draw() {
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.width, this.height)
+        console.log('x: ', this.x, 'y: ', this.y, 'width: ', this.width, 'height: ', this.height)
+    }
+
+    // Update the position of the bullet on the y-axis on each frame
+    update() {
+        this.y -= 2
+        this.draw()
     }
 }
 
-let bullet = new Bullet(shipX + 40, 550);
+let bullet = null
+// let bullet = new Bullet(shipX + 40, shipY - 20);
 
 // Animation
 function display() {
@@ -38,7 +46,7 @@ function display() {
     ctx.fillRect(shipX, 570, 100, 20)
 
     if (bullet) {
-        bullet.draw()
+        bullet.update()
     }
     window.requestAnimationFrame(display)
 }
@@ -60,6 +68,9 @@ document.addEventListener('keydown', (e) => {
             // console.log('shipX right', shipX)
         }
         break;
-    }
 
+        case ' ':
+            bullet = new Bullet(shipX + 40, shipY - 20)
+        break;
+    }
 })
