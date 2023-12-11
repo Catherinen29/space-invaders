@@ -10,9 +10,9 @@ let shipY = 570
 ctx.fillRect(shipX, shipY, 100, 20) // x, y coords on canvas, width, height
 
 class Bullet {
-    constructor(x, y) {
-        this.x = x
-        this.y = y
+    constructor(xpos, ypos) {
+        this.xpos = xpos
+        this.ypos = ypos
 
         this.width = 20
         this.height = 20
@@ -22,14 +22,16 @@ class Bullet {
 
     draw() {
         ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-        console.log('x: ', this.x, 'y: ', this.y, 'width: ', this.width, 'height: ', this.height)
+        ctx.fillRect(this.xpos, this.ypos, this.width, this.height)
+        console.log('x: ', this.xpos, 'y: ', this.ypos, 'width: ', this.width, 'height: ', this.height)
     }
 
     // Update the position of the bullet on the y-axis on each frame
     update() {
-        this.y -= 2
-        this.draw()
+        if (this.ypos > 0) {
+            this.ypos -= 2
+            this.draw()
+        }
     }
 }
 
