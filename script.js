@@ -36,7 +36,7 @@ class Bullet {
 }
 
 let bullet = null
-// let bullet = new Bullet(shipX + 40, shipY - 20);
+let bulletArray = []
 
 // Animation
 function display() {
@@ -47,8 +47,11 @@ function display() {
     ctx.fillStyle = 'red'
     ctx.fillRect(shipX, 570, 100, 20)
 
-    if (bullet) {
-        bullet.update()
+    // Draw a bullet each time the space bar is pressed
+    if (bulletArray.length >= 1) {
+        bulletArray.forEach(bullet => {
+            bullet.update()
+        });
     }
     window.requestAnimationFrame(display)
 }
@@ -60,19 +63,18 @@ document.addEventListener('keydown', (e) => {
         case 'ArrowLeft': 
             if (shipX >= 10) {
                 shipX -= 10
-                // console.log('shipX left', shipX)
             }
         break;
 
         case 'ArrowRight':
             if (shipX <= 490){
             shipX += 10
-            // console.log('shipX right', shipX)
         }
         break;
 
         case ' ':
-            bullet = new Bullet(shipX + 40, shipY - 20)
+            // Add an element to the bulletArray each time the space bar is pressed.
+            bulletArray.push(new Bullet(shipX + 40, shipY - 20))
         break;
     }
 })
