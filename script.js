@@ -9,6 +9,10 @@ let shipX = 250
 let shipY = 570
 ctx.fillRect(shipX, shipY, 100, 20) // x, y coords on canvas, width, height
 
+// Bullets
+let bullet = null
+let bulletArray = []
+
 class Bullet {
     constructor(xpos, ypos) {
         this.xpos = xpos
@@ -23,20 +27,71 @@ class Bullet {
     draw() {
         ctx.fillStyle = this.color
         ctx.fillRect(this.xpos, this.ypos, this.width, this.height)
-        console.log('x: ', this.xpos, 'y: ', this.ypos, 'width: ', this.width, 'height: ', this.height)
+        // console.log('x: ', this.xpos, 'y: ', this.ypos, 'width: ', this.width, 'height: ', this.height)
     }
 
     // Update the position of the bullet on the y-axis on each frame
     update() {
         if (this.ypos > 0) {
-            this.ypos -= 2
+            this.ypos -= 8
             this.draw()
         }
+        // TO-DO: conditional draw if bullet hits alien.
     }
 }
 
-let bullet = null
-let bulletArray = []
+// Invaders
+
+class Invader {
+    constructor(xpos, ypos, direction = 1) {
+        this.xpos = xpos
+        this.ypos = ypos
+
+        this.width = 20
+        this.height = 20
+        this.color = 'green'
+        this.borderColor = 'pink'
+        this.direction = direction
+
+        console.log('invader created',)
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.xpos, this.ypos, this.width, this.height, this.borderColor)
+        // console.log('x: ', this.xpos, 'y: ', this.ypos, 'width: ', this.width, 'height: ', this.height)
+    }
+
+    update() {
+        this.xpos += 1 * this.direction
+        this.draw()
+    }
+}
+
+
+class invaderGrid {
+    constructor() {
+        this.xpos = 0
+        this.ypos = 0
+
+        this.invaders = []
+
+        for (let x = 0; x < 5; x++) {
+            for (let y = 0; y < 3; y++) {
+            this.invaders.push(new Invader(x * 30, y * 30))
+        }
+    }
+        console.log('this.invaders', this.invaders)
+    }
+    
+    update() {
+        this.invaders.forEach(el => {
+
+        })
+    }
+}
+
+let grids = [new invaderGrid()]
 
 // Animation
 function display() {
@@ -53,6 +108,15 @@ function display() {
             bullet.update()
         });
     }
+
+    // invadersArr.forEach(invader => invader.update())
+    grids.forEach(grid => {
+        grid.update()
+        grid.invaders.forEach(invader => {
+            invader.update()
+        })
+    })
+
     window.requestAnimationFrame(display)
 }
 window.requestAnimationFrame(display)
@@ -76,5 +140,6 @@ document.addEventListener('keydown', (e) => {
             // Add an element to the bulletArray each time the space bar is pressed.
             bulletArray.push(new Bullet(shipX + 40, shipY - 20))
         break;
+
     }
 })
