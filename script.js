@@ -99,18 +99,29 @@ class invaderGrid {
     
     
     update() {
+        // From each load, add the speed to the xpos on each frame
         this.xpos += this.xSpeed
 
+        // Each time the grid hits the side of the canvas
         if ((this.xpos + this.width + 40) >= canvas.width || this.xpos <= 0) {
             console.log('canvas.width', canvas.width)
             console.log('this.xpos', this.xpos)
             console.log('this.width', this.width)
             console.log('this.xspeed', this.xSpeed)
+        // Reverse the direction of the movement
             this.xSpeed = -this.xSpeed 
+        // Increase the ypos only on the frame which hits the side of the canvas
+            this.ySpeed = 30
+        } else {
+        // During frames where the grid does not hit the edge of the canvas,
+        // keep the speed at 0
+            this.ySpeed = 0
         }
 
+    // Update the invader positions on each frame
         this.invaders.forEach((invader) => {
             invader.xpos += this.xSpeed;
+            invader.ypos += this.ySpeed
         })
 
     }
