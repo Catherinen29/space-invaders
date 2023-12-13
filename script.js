@@ -52,6 +52,7 @@ class Invader {
         this.color = 'green'
         this.borderColor = 'pink'
         this.direction = direction
+        this.speed = 1
 
         console.log('invader created',)
     }
@@ -63,31 +64,55 @@ class Invader {
     }
 
     update() {
-        this.xpos += 1 * this.direction
+        // this.xpos += this.speed * this.direction
         this.draw()
+    
     }
 }
 
+let invader = new Invader(40, 300)
 
 class invaderGrid {
     constructor() {
         this.xpos = 0
         this.ypos = 0
 
+        this.xSpeed = 1
+        this.ySpeed = 0
+
         this.invaders = []
 
-        for (let x = 0; x < 5; x++) {
-            for (let y = 0; y < 3; y++) {
+        // Set the number of columns in the grid (x)
+        const columns = 5
+        // Set the number of rows in the grid (y)
+        const rows = 3
+
+        this.width = columns * 20
+
+        // Create a new invader for each column and each row
+        for (let x = 0; x < columns; x++) {
+            for (let y = 0; y < rows; y++) {
             this.invaders.push(new Invader(x * 30, y * 30))
+            }
         }
     }
-        console.log('this.invaders', this.invaders)
-    }
+    
     
     update() {
-        this.invaders.forEach(el => {
+        this.xpos += this.xSpeed
 
+        if ((this.xpos + this.width + 40) >= canvas.width || this.xpos <= 0) {
+            console.log('canvas.width', canvas.width)
+            console.log('this.xpos', this.xpos)
+            console.log('this.width', this.width)
+            console.log('this.xspeed', this.xSpeed)
+            this.xSpeed = -this.xSpeed 
+        }
+
+        this.invaders.forEach((invader) => {
+            invader.xpos += this.xSpeed;
         })
+
     }
 }
 
