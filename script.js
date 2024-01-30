@@ -3,6 +3,30 @@ console.log('Take off')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+// Animation Frame ID
+let animationId = null
+
+// Start game
+const playgame = document.getElementById('playgame')
+const endgame = document.getElementById('endgame')
+let gameactive = false
+
+playgame.addEventListener('click', () => {
+    gameactive = true
+    display()
+    console.log('LETS PLAY',)
+})
+
+endgame.addEventListener('click', () => {
+    // if (gameactive == true){
+        gameactive = false
+        console.log('GAMEOVER',)
+        // window.cancelAnimationFrame(animationId)
+        resetGame()
+    // }
+})
+
+
 // Ship
 ctx.fillStyle = 'red'
 let shipX = 250
@@ -35,6 +59,11 @@ class Bullet {
         if (this.ypos > 0) {
             this.ypos -= 8
             this.draw()
+        } 
+        // Remove bullet from array when it leaves the canvas.
+        else if (this.ypos < 0) {
+            bulletArray.shift()
+            console.log('bulletArray', bulletArray)
         }
         // TO-DO: conditional draw if bullet hits alien.
     }
@@ -77,7 +106,8 @@ class invaderGrid {
         this.xpos = 0
         this.ypos = 0
 
-        this.xSpeed = 1
+        // Control the direction of movement
+        this.xSpeed = 5
         this.ySpeed = 0
 
         this.invaders = []
@@ -88,6 +118,7 @@ class invaderGrid {
         const rows = 3
 
         this.width = columns * 20
+        this.height = (rows * 20) + 40
 
         // Create a new invader for each column and each row
         for (let x = 0; x < columns; x++) {
@@ -104,10 +135,7 @@ class invaderGrid {
 
         // Each time the grid hits the side of the canvas
         if ((this.xpos + this.width + 40) >= canvas.width || this.xpos <= 0) {
-            console.log('canvas.width', canvas.width)
-            console.log('this.xpos', this.xpos)
-            console.log('this.width', this.width)
-            console.log('this.xspeed', this.xSpeed)
+            // console.log('this.xpos', this.xpos)
         // Reverse the direction of the movement
             this.xSpeed = -this.xSpeed 
         // Increase the ypos only on the frame which hits the side of the canvas
@@ -118,9 +146,28 @@ class invaderGrid {
             this.ySpeed = 0
         }
 
+
+        
+        // ********************************
+
+        // TO-DO
+        // if bottom of grid hits canvas height, explode ship
+        if (this.invaders[this.invaders.length - 1].ypos >= canvas.height - 400) {
+            // grids = []
+            ctx.fillStyle = 'orange'
+            gameactive = false
+            resetGame()
+        }
+        
+        // *********************************
+
+
+
+
     // Update the invader positions on each frame
         this.invaders.forEach((invader) => {
             invader.xpos += this.xSpeed;
+            
             invader.ypos += this.ySpeed
         })
 
@@ -129,8 +176,51 @@ class invaderGrid {
 
 let grids = [new invaderGrid()]
 
+
+// Re-set the game
+function resetGame() {
+
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+
+    // Reset bullets
+    bullet = null
+    bulletArray = []
+
+    // Reset ship position
+    ctx.fillStyle = 'red'
+    shipX = 250
+    shipY = 570
+    ctx.fillRect(shipX, shipY, 100, 20)
+
+
+    // Reset the starting point of the grid
+    grids[0].xpos = 0;
+    grids[0].ypos = 0;
+
+    // Set the direction of movement of the grid
+    grids[0].xSpeed = 5;
+    grids[0].ySpeed = 0;
+    
+    // Clear grid
+    grids[0].invaders = [];
+
+    // Create new grid
+    const columns = 5;
+    const rows = 3;
+
+    for (let x = 0; x < columns; x++) {
+        for (let y = 0; y < rows; y++) {
+            grids[0].invaders.push(new Invader(x * 30, y * 30));
+        }
+    }
+
+}
+
+
 // Animation
+
 function display() {
+    
     // Clear the canvas on each frame
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
     
@@ -145,7 +235,11 @@ function display() {
         });
     }
 
-    // invadersArr.forEach(invader => invader.update())
+
+    // If the game is active
+    if (gameactive) {
+        
+    // Display the grid of invaders
     grids.forEach(grid => {
         grid.update()
         grid.invaders.forEach(invader => {
@@ -153,9 +247,12 @@ function display() {
         })
     })
 
-    window.requestAnimationFrame(display)
+    // Continue the loop 
+    animationId = window.requestAnimationFrame(display)
+    }
 }
-window.requestAnimationFrame(display)
+
+
 
 // Arrow events
 document.addEventListener('keydown', (e) => {
@@ -177,5 +274,8 @@ document.addEventListener('keydown', (e) => {
             bulletArray.push(new Bullet(shipX + 40, shipY - 20))
         break;
 
+        case 'ArrowUp':
+            console.log('UP',)
+        break;
     }
 })
