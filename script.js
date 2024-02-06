@@ -19,8 +19,9 @@ playgame.addEventListener('click', () => {
         gameactive = true
         display()
         console.log('LETS PLAY')
-        // If guard clause is not included, the invader grid speeds up if 
-        // the playgame button or space bar are pressed
+        // If guard clause is not included, the whole loop is triggered every
+        // time the playgame button or space bar are pressed & as such, 
+        // the invader grid speeds up.
     }
 })
 
