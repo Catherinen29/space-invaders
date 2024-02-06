@@ -22,29 +22,44 @@ playgame.addEventListener('click', () => {
         // If guard clause is not included, the whole loop is triggered every
         // time the playgame button or space bar are pressed & as such, 
         // the invader grid speeds up.
+
+        // Create a new ship at start of game
+        ship = new Ship(250, 570)
     }
 })
 
 endgame.addEventListener('click', () => {
-    // if (gameactive == true){
+    if (gameactive == true){
         gameactive = false
-        console.log('GAMEOVER',)
+        console.log('RESET')
         // window.cancelAnimationFrame(animationId)
         resetGame()
-    // }
+    }
 })
 
-
 // Ship
-ctx.fillStyle = 'red'
-let shipX = 250
-let shipY = 570
-ctx.fillRect(shipX, shipY, 100, 20) // x, y coords on canvas, width, height
+let ship = null
+class Ship {
+    constructor(shipX, shipY) {
+        this.shipX = shipX
+        this.shipY = shipY
+        this.shipColor = 'red'
+    }
+
+    draw() {
+        ctx.fillStyle = this.shipColor
+        ctx.fillRect(this.shipX, this.shipY, 100, 20)
+    }
+
+    update() {
+        this.draw()
+    }
+}
+
 
 // Bullets
 let bullet = null
 let bulletArray = []
-
 
 class Bullet {
     constructor(xpos, ypos) {
@@ -167,8 +182,9 @@ class invaderGrid {
         // if bottom of grid hits canvas height, explode ship
         if (this.invaders[this.invaders.length - 1].ypos >= canvas.height - 400) {
             // grids = []
-            ctx.fillStyle = 'orange'
-            gameactive = false
+            ship.shipColor = 'orange'
+            // Stop game where it is
+            // gameactive = false
             resetGame()
         }
         
@@ -195,16 +211,14 @@ function resetGame() {
 
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
+    gameactive = false
+
     // Reset bullets
     bullet = null
     bulletArray = []
 
-    // Reset ship position
-    ctx.fillStyle = 'red'
-    shipX = 250
-    shipY = 570
-    ctx.fillRect(shipX, shipY, 100, 20)
-
+    // Clear current ship
+    ship = null
 
     // Reset the starting point of the grid
     grids[0].xpos = 0;
@@ -227,6 +241,7 @@ function resetGame() {
         }
     }
 
+    console.log('GAME OVER')
 }
 
 
@@ -238,8 +253,9 @@ function display() {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
     
     // Re-draw the ship on each frame
-    ctx.fillStyle = 'red'
-    ctx.fillRect(shipX, 570, 100, 20)
+    if (ship) {
+        ship.update()
+    }
 
     // Draw a bullet each time the space bar is pressed
     if (bulletArray.length >= 1) {
@@ -271,20 +287,20 @@ function display() {
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'ArrowLeft': 
-            if (shipX >= 10) {
-                shipX -= 10
+            if (ship.shipX >= 10) {
+                ship.shipX -= 10
             }
         break;
 
         case 'ArrowRight':
-            if (shipX <= 490){
-            shipX += 10
+            if (ship.shipX <= 490){
+                ship.shipX += 10
         }
         break;
 
         case ' ':
             // Add an element to the bulletArray each time the space bar is pressed.
-            bulletArray.push(new Bullet(shipX + 40, shipY - 20))
+            bulletArray.push(new Bullet(ship.shipX + 40, ship.shipY - 20))
             // debugger
         break;
 
