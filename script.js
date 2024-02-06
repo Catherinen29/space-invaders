@@ -11,10 +11,17 @@ const playgame = document.getElementById('playgame')
 const endgame = document.getElementById('endgame')
 let gameactive = false
 
+let playerLevel = 1
+
 playgame.addEventListener('click', () => {
-    gameactive = true
-    display()
-    console.log('LETS PLAY',)
+    // Only run the display function if the game is inactive
+    if (!gameactive) {
+        gameactive = true
+        display()
+        console.log('LETS PLAY')
+        // If guard clause is not included, the invader grid speeds up if 
+        // the playgame button or space bar are pressed
+    }
 })
 
 endgame.addEventListener('click', () => {
@@ -36,6 +43,7 @@ ctx.fillRect(shipX, shipY, 100, 20) // x, y coords on canvas, width, height
 // Bullets
 let bullet = null
 let bulletArray = []
+
 
 class Bullet {
     constructor(xpos, ypos) {
@@ -63,7 +71,7 @@ class Bullet {
         // Remove bullet from array when it leaves the canvas.
         else if (this.ypos < 0) {
             bulletArray.shift()
-            console.log('bulletArray', bulletArray)
+            // console.log('bulletArray', bulletArray)
         }
         // TO-DO: conditional draw if bullet hits alien.
     }
@@ -75,13 +83,14 @@ class Invader {
     constructor(xpos, ypos, direction = 1) {
         this.xpos = xpos
         this.ypos = ypos
+        
 
         this.width = 20
         this.height = 20
         this.color = 'green'
         this.borderColor = 'pink'
-        this.direction = direction
-        this.speed = 1
+        // this.direction = direction
+        // this.speed = 1
 
         console.log('invader created',)
     }
@@ -106,8 +115,8 @@ class invaderGrid {
         this.xpos = 0
         this.ypos = 0
 
-        // Control the direction of movement
-        this.xSpeed = 5
+        // Control the direction of movement & speed
+        this.xSpeed = playerLevel + 1
         this.ySpeed = 0
 
         this.invaders = []
@@ -132,6 +141,8 @@ class invaderGrid {
     update() {
         // From each load, add the speed to the xpos on each frame
         this.xpos += this.xSpeed
+        
+        // debugger
 
         // Each time the grid hits the side of the canvas
         if ((this.xpos + this.width + 40) >= canvas.width || this.xpos <= 0) {
@@ -143,6 +154,7 @@ class invaderGrid {
         } else {
         // During frames where the grid does not hit the edge of the canvas,
         // keep the speed at 0
+
             this.ySpeed = 0
         }
 
@@ -198,7 +210,7 @@ function resetGame() {
     grids[0].ypos = 0;
 
     // Set the direction of movement of the grid
-    grids[0].xSpeed = 5;
+    grids[0].xSpeed = playerLevel + 1;
     grids[0].ySpeed = 0;
     
     // Clear grid
@@ -242,7 +254,7 @@ function display() {
     // Display the grid of invaders
     grids.forEach(grid => {
         grid.update()
-        grid.invaders.forEach(invader => {
+        grid.invaders.forEach(invader => { 
             invader.update()
         })
     })
@@ -272,6 +284,7 @@ document.addEventListener('keydown', (e) => {
         case ' ':
             // Add an element to the bulletArray each time the space bar is pressed.
             bulletArray.push(new Bullet(shipX + 40, shipY - 20))
+            // debugger
         break;
 
         case 'ArrowUp':

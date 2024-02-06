@@ -4,5 +4,6 @@ body{
 #canvas {
     display: block;
     margin: 5rem auto;
+    margin-top: 2rem;
     background-color: black;
 }
