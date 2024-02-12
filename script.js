@@ -178,7 +178,7 @@ class Bullet {
         this.xpos = xpos
         this.ypos = ypos
 
-        this.width = 20
+        this.width = 10
         this.height = 20
         this.color = 'yellow'
         console.log('CREATED')
@@ -210,19 +210,28 @@ class Bullet {
 // Invaders
 
 class Invader {
-    constructor(xpos, ypos, direction = 1) {
+    constructor(xpos, ypos, x, y, direction = 1) {
         this.xpos = xpos
         this.ypos = ypos
         
+        // Position of invader within grid
+        this.x = x
+        this.y = y
 
-        this.width = 20
-        this.height = 20
+// ************
+        this.width = 50
+        this.height = 50
+        // change back to 20
         this.color = 'green'
-        this.borderColor = 'pink'
+        this.alive = true
+        // this.borderColor = 'pink'
         // this.direction = direction
         // this.speed = 1
 
-        console.log('invader created',)
+        console.log('invader created')
+
+        console.log('invader column', x + 1)
+        console.log('invader row', y + 1)
     }
     
     draw() {
@@ -252,17 +261,19 @@ class invaderGrid {
         this.invaders = []
 
         // Set the number of columns in the grid (x)
-        const columns = 5
+        this.columns = 5
         // Set the number of rows in the grid (y)
-        const rows = 3
+        this.rows = 3
 
-        this.width = columns * 20
-        this.height = (rows * 20) + 40
+        this.width = this.columns * 20
+        this.height = (this.rows * 20) + 40
 
         // Create a new invader for each column and each row
-        for (let x = 0; x < columns; x++) {
-            for (let y = 0; y < rows; y++) {
-            this.invaders.push(new Invader(x * 30, y * 30))
+        for (let x = 0; x < this.columns; x++) {
+            for (let y = 0; y < this.rows; y++) {
+            // ***************
+            this.invaders.push(new Invader(x * 60, y * 60, x, y))
+            // change back to * 30
             }
         }
     }
@@ -310,6 +321,37 @@ class invaderGrid {
 
 let grids = [new invaderGrid()]
 
+
+
+// Detect collision between bullet and invader
+function collisionDetection() {
+
+    // Loop through invaders 
+    for (let i = 0; i < grids[0].invaders.length; i++) {
+        // Loop through bullets
+        for (let b = 0; b < bulletArray.length; b++) {
+            if (grids[0].invaders[i].alive = true && 
+
+                grids[0].invaders[i].xpos < bulletArray[b].xpos && 
+                grids[0].invaders[i].xpos + 50 > bulletArray[b].xpos && 
+                grids[0].invaders[i].ypos < bulletArray[b].ypos && 
+                grids[0].invaders[i].ypos + 50 > bulletArray[b].ypos 
+                ) {
+                    // COLLISION   
+                    console.log('HIT')
+                    grids[0].invaders[i].color = 'pink'
+                    
+                    // Change status of invader
+                    grids[0].invaders[i].alive = false
+
+                    // remove bullet from array
+            } else {
+                // NO COLLISION
+                
+            }
+        }
+    }
+}
 
 
 // Re-set the game
@@ -383,9 +425,7 @@ function display() {
         })
     })
 
-    // if (!gameactive) {
-    //     explode()
-    // }
+    collisionDetection()
 
     // Continue the loop 
     animationId = window.requestAnimationFrame(display)
