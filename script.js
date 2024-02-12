@@ -37,6 +37,7 @@ endgame.addEventListener('click', () => {
     }
 })
 
+
 // Ship
 let ship = null
 class Ship {
@@ -54,9 +55,120 @@ class Ship {
     update() {
         this.draw()
     }
+
 }
 
 
+const explodeButton = document.getElementById('explode')
+explodeButton.addEventListener('click', () => {
+    // In order:
+
+    // Pause invader grid position
+    grids[0].xSpeed = 0
+    grids[0].ySpeed = 0
+
+
+    // Explode ship
+    explode()
+
+    // Hide ship at explosion
+    ship = null
+
+    // Reset game after 2 seconds
+    setTimeout(() => {
+        resetGame()
+    }, 2000)
+
+    
+})
+let particles = []
+
+// Ship particles
+class shipParticle {
+    constructor(x, y, radius, dx, dy) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        // speed: dx & dy
+        this.dx = dx
+        this.dy = dy
+        this.alpha = 1
+    }
+
+    draw() {
+        // Saves the current state 
+        ctx.save()
+        // Specifies the transparency
+        ctx.globalAlpha = this.alpha
+        ctx.fillStyle = 'orange'
+
+        // Begins or resets the path for the arc
+        ctx.beginPath()
+
+        // Draw the particle/circle:
+        // Create a curve (x, y, start angle, end angle, direction of rotation (false = clockwise))
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 5, false)
+        ctx.fill()
+
+        ctx.closePath()
+
+        // Return to the original state
+        ctx.restore()
+    }
+
+    update() {
+        this.draw()
+        // Decrease the value/transparency of the particle
+        this.alpha -= 0.05
+        this.x += this.dx
+        this.y += this.dy
+    }
+
+}
+
+function explode() {
+    
+    // ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+
+    // Create up to 500 particles with random positioning and 
+    // random sizing
+    for (i = 0; i <= 500; i++) {
+        let dx = Math.random() * 35 - 15
+        let dy = Math.random() * 35 - 15
+        let radius = Math.random() * 10
+        let particle = new shipParticle(ship.shipX + 50, ship.shipY + 30, radius, dx, dy)
+
+        particles.push(particle)
+    }
+ 
+    function animateExplosion() {
+        // ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+
+        particles.forEach((particle, i) => {
+            // If transparency is <= 0, remove from particles array
+            if (particle.alpha <= 0) {
+                particles.splice(i, 1)
+            } else {
+                particle.update()
+            }
+        })
+
+        // Animate while particles array > 0
+        if (particles.length > 0) {
+            requestAnimationFrame(animateExplosion)
+        }
+    }
+
+    animateExplosion()
+
+    // setTimeout(() => {
+    //     particles = []
+    //     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+    // }, 5000)
+}
+
+
+ 
 // Bullets
 let bullet = null
 let bulletArray = []
@@ -92,6 +204,8 @@ class Bullet {
         // TO-DO: conditional draw if bullet hits alien.
     }
 }
+
+
 
 // Invaders
 
@@ -175,23 +289,14 @@ class invaderGrid {
         }
 
 
-        
-        // ********************************
-
-        // TO-DO
-        // if bottom of grid hits canvas height, explode ship
+        // if bottom of grid hits certain height, explode ship
         if (this.invaders[this.invaders.length - 1].ypos >= canvas.height - 400) {
             // grids = []
             ship.shipColor = 'orange'
-            // Stop game where it is
-            // gameactive = false
+            explode()
             resetGame()
         }
         
-        // *********************************
-
-
-
 
     // Update the invader positions on each frame
         this.invaders.forEach((invader) => {
@@ -204,6 +309,7 @@ class invaderGrid {
 }
 
 let grids = [new invaderGrid()]
+
 
 
 // Re-set the game
@@ -245,6 +351,7 @@ function resetGame() {
 }
 
 
+
 // Animation
 
 function display() {
@@ -275,6 +382,10 @@ function display() {
             invader.update()
         })
     })
+
+    // if (!gameactive) {
+    //     explode()
+    // }
 
     // Continue the loop 
     animationId = window.requestAnimationFrame(display)
