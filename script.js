@@ -218,10 +218,8 @@ class Invader {
         this.x = x
         this.y = y
 
-// ************
-        this.width = 50
-        this.height = 50
-        // change back to 20
+        this.width = 20
+        this.height = 20
         this.color = 'green'
         this.alive = true
         // this.borderColor = 'pink'
@@ -247,7 +245,7 @@ class Invader {
     }
 }
 
-let invader = new Invader(40, 300)
+let invader = new Invader(30, 300)
 
 class invaderGrid {
     constructor() {
@@ -271,9 +269,7 @@ class invaderGrid {
         // Create a new invader for each column and each row
         for (let x = 0; x < this.columns; x++) {
             for (let y = 0; y < this.rows; y++) {
-            // ***************
-            this.invaders.push(new Invader(x * 60, y * 60, x, y))
-            // change back to * 30
+            this.invaders.push(new Invader(x * 30, y * 30, x, y))
             }
         }
     }
@@ -331,23 +327,25 @@ function collisionDetection() {
         // Loop through bullets
         for (let b = 0; b < bulletArray.length; b++) {
             if (grids[0].invaders[i].alive = true && 
-
                 grids[0].invaders[i].xpos < bulletArray[b].xpos && 
                 grids[0].invaders[i].xpos + 50 > bulletArray[b].xpos && 
                 grids[0].invaders[i].ypos < bulletArray[b].ypos && 
                 grids[0].invaders[i].ypos + 50 > bulletArray[b].ypos 
-                ) {
-                    // COLLISION   
-                    console.log('HIT')
-                    grids[0].invaders[i].color = 'pink'
-                    
-                    // Change status of invader
-                    grids[0].invaders[i].alive = false
+            ) {
+                // COLLISION   
+                console.log('HIT')
+                grids[0].invaders[i].color = 'pink'
 
-                    // remove bullet from array
+                // Change status of invader
+                // grids[0].invaders[i].alive = false
+
+                // Remove bullet from array at collision
+                bulletArray.splice(b, 1)
+
+                // Remove invader from array at collision
+                grids[0].invaders.splice(i, 1)
             } else {
                 // NO COLLISION
-                
             }
         }
     }
