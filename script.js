@@ -142,7 +142,7 @@ function explode() {
     }
  
     function animateExplosion() {
-        // ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
         particles.forEach((particle, i) => {
             // If transparency is <= 0, remove from particles array
@@ -160,11 +160,6 @@ function explode() {
     }
 
     animateExplosion()
-
-    // setTimeout(() => {
-    //     particles = []
-    //     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
-    // }, 5000)
 }
 
 
@@ -259,9 +254,9 @@ class invaderGrid {
         this.invaders = []
 
         // Set the number of columns in the grid (x)
-        this.columns = 5
+        this.columns = 8
         // Set the number of rows in the grid (y)
-        this.rows = 3
+        this.rows = 5
 
         this.width = this.columns * 20
         this.height = (this.rows * 20) + 40
@@ -282,7 +277,7 @@ class invaderGrid {
         // debugger
 
         // Each time the grid hits the side of the canvas
-        if ((this.xpos + this.width + 40) >= canvas.width || this.xpos <= 0) {
+        if ((this.xpos + this.width + 70) >= canvas.width || this.xpos <= 0) {
             // console.log('this.xpos', this.xpos)
         // Reverse the direction of the movement
             this.xSpeed = -this.xSpeed 
@@ -297,7 +292,7 @@ class invaderGrid {
 
 
         // if bottom of grid hits certain height, explode ship
-        if (this.invaders[this.invaders.length - 1].ypos >= canvas.height - 400) {
+        if (this.invaders[this.invaders.length - 1].ypos >= canvas.height - 200) {
             // grids = []
             ship.shipColor = 'orange'
             explode()
@@ -378,8 +373,8 @@ function resetGame() {
     grids[0].invaders = [];
 
     // Create new grid
-    const columns = 5;
-    const rows = 3;
+    const columns = 8;
+    const rows = 5;
 
     for (let x = 0; x < columns; x++) {
         for (let y = 0; y < rows; y++) {
