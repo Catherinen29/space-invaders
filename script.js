@@ -176,7 +176,8 @@ class Bullet {
         this.width = 10
         this.height = 20
         this.color = 'yellow'
-        console.log('CREATED')
+
+        // console.log('CREATED')
     }
 
     draw() {
@@ -190,6 +191,7 @@ class Bullet {
         if (this.ypos > 0) {
             this.ypos -= 8
             this.draw()
+            // console.log('bullet array', bulletArray)
         } 
         // Remove bullet from array when it leaves the canvas.
         else if (this.ypos < 0) {
@@ -221,10 +223,10 @@ class Invader {
         // this.direction = direction
         // this.speed = 1
 
-        console.log('invader created')
+        // console.log('invader created')
 
-        console.log('invader column', x + 1)
-        console.log('invader row', y + 1)
+        // console.log('invader column', x + 1)
+        // console.log('invader row', y + 1)
     }
     
     draw() {
@@ -254,9 +256,10 @@ class invaderGrid {
         this.invaders = []
 
         // Set the number of columns in the grid (x)
-        this.columns = 8
+        this.columns = 5
         // Set the number of rows in the grid (y)
-        this.rows = 5
+        this.rows = 3
+        // console.log("🚀 ~ invaderGrid ~ constructor ~ rows:", this.rows)
 
         this.width = this.columns * 20
         this.height = (this.rows * 20) + 40
@@ -273,11 +276,41 @@ class invaderGrid {
     update() {
         // From each load, add the speed to the xpos on each frame
         this.xpos += this.xSpeed
-        
+        // console.log('rows', this.rows) 
         // debugger
 
+        // [a, b, c, d, e] 
+        if (this.invaders.slice(0, this.rows).every(x => !x.alive)) {
+            console.log('invader grid', invaderGrid)
+            
+            this.invaders.splice(0, this.rows) 
+            this.columns = this.columns - 1
+            this.width = this.columns * 20
+            // this.xpos -= 30
+
+            console.log("🚀 ~ invaderGrid ~ update ~ columns:", this.columns)
+            console.log("🚀 ~ invaderGrid ~ update ~ this.width:", this.width)
+            console.log("🚀 ~ invaderGrid ~ update ~ invaders:", this.invaders)
+            console.log("🚀 ~ invaderGrid ~ update ~ xpos:", this.xpos)
+            
+
+        } else if (this.invaders.slice(-(this.rows), this.invaders.length).every(x => !x.alive)) {
+            this.invaders.splice(-(this.rows), this.invaders.length) 
+            this.columns = this.columns - 1
+            this.width = this.columns * 20
+            this.xpos += 30
+
+            console.log('FINAL COLUMN CLEARED',)
+            console.log("🚀 ~ invaderGrid ~ update ~ columns:", this.columns)
+            console.log("🚀 ~ invaderGrid ~ update ~ this.width:", this.width)
+            console.log("🚀 ~ invaderGrid ~ update ~ invaders:", this.invaders)
+            console.log("🚀 ~ invaderGrid ~ update ~ xpos:", this.xpos)
+        }
+
         // Each time the grid hits the side of the canvas
-        if ((this.xpos + this.width + 70) >= canvas.width || this.xpos <= 0) {
+
+        // xpos + width of grid + number of gaps between invaders * width of gap
+        if ((this.xpos + this.width + ((this.columns - 1) * 10)) >= canvas.width || this.xpos <= 0) {
             // console.log('this.xpos', this.xpos)
         // Reverse the direction of the movement
             this.xSpeed = -this.xSpeed 
@@ -314,6 +347,7 @@ let grids = [new invaderGrid()]
 
 
 
+
 // Detect collision between bullet and invader
 function collisionDetection() {
 
@@ -321,26 +355,33 @@ function collisionDetection() {
     for (let i = 0; i < grids[0].invaders.length; i++) {
         // Loop through bullets
         for (let b = 0; b < bulletArray.length; b++) {
-            if (grids[0].invaders[i].alive = true && 
+            // Only check for invaders that are alive
+            if (grids[0].invaders[i].alive === true && 
+                // Does the bullet overlap the same coordinate as the invader?
                 grids[0].invaders[i].xpos < bulletArray[b].xpos && 
                 grids[0].invaders[i].xpos + 50 > bulletArray[b].xpos && 
                 grids[0].invaders[i].ypos < bulletArray[b].ypos && 
                 grids[0].invaders[i].ypos + 50 > bulletArray[b].ypos 
             ) {
                 // COLLISION   
-                console.log('HIT')
+                // console.log('invader array', grids[0].invaders)
                 grids[0].invaders[i].color = 'pink'
 
                 // Change status of invader
-                // grids[0].invaders[i].alive = false
+                grids[0].invaders[i].alive = false
 
                 // Remove bullet from array at collision
                 bulletArray.splice(b, 1)
 
                 // Remove invader from array at collision
-                grids[0].invaders.splice(i, 1)
+                // grids[0].invaders.splice(i, 1)
+
+                // console.log('grids[0].invaders', grids[0].invaders)
+                // console.log('grids[0].invaders[i]',grids[0].invaders[i])
+                console.log('invader array', grids[0].invaders)
             } else {
                 // NO COLLISION
+                // grids[0].invaders[i].alive = true
             }
         }
     }
@@ -413,10 +454,25 @@ function display() {
     // Display the grid of invaders
     grids.forEach(grid => {
         grid.update()
-        grid.invaders.forEach(invader => { 
-            invader.update()
+        grid.invaders.forEach(invader => {
+                invader.update()
+            
         })
     })
+
+
+// Create shallow array
+// start at index 0, end at index (number of rows)
+// for each item is alive in the shallow array?
+// If EVERY item meets the condition
+// remove items start at index 0, end at index (number of rows)
+
+    // grids[0].invaders.slice(0, grids[0].rows).every(x => !x.alive) 
+    //     ? 
+    //     // grids[0].invaders.splice(0, grids[0].rows) 
+    //     console.log('SLICE',)
+    //     : console.log('NO SLICE',)
+
 
     collisionDetection()
 
