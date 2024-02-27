@@ -276,35 +276,35 @@ class invaderGrid {
     update() {
         // From each load, add the speed to the xpos on each frame
         this.xpos += this.xSpeed
-        // console.log('rows', this.rows) 
-        // debugger
 
-        // [a, b, c, d, e] 
+        // If all invaders in the first column (with index 0 - num rows)
+        // have an alive status of false
         if (this.invaders.slice(0, this.rows).every(x => !x.alive)) {
-            console.log('invader grid', invaderGrid)
-            
+
+            // Remove these invaders from the array
             this.invaders.splice(0, this.rows) 
+            // Reduce the size of the invader grid by one column
             this.columns = this.columns - 1
+            // Refresh the width of the grid
             this.width = this.columns * 20
-            // this.xpos -= 30
-
-            console.log("🚀 ~ invaderGrid ~ update ~ columns:", this.columns)
-            console.log("🚀 ~ invaderGrid ~ update ~ this.width:", this.width)
-            console.log("🚀 ~ invaderGrid ~ update ~ invaders:", this.invaders)
-            console.log("🚀 ~ invaderGrid ~ update ~ xpos:", this.xpos)
-            
-
-        } else if (this.invaders.slice(-(this.rows), this.invaders.length).every(x => !x.alive)) {
-            this.invaders.splice(-(this.rows), this.invaders.length) 
-            this.columns = this.columns - 1
-            this.width = this.columns * 20
+            // Adjust the position of the grid based on the new size of the grid
             this.xpos += 30
 
+            console.log('FIRST COLUMN CLEARED',)
+            
+        } 
+        // If invaders in the final column
+        // have an alive status of false
+        else if (this.invaders.slice(-(this.rows), this.invaders.length).every(x => !x.alive)) {
+
+            // Remove these invaders from the array
+            this.invaders.splice(-(this.rows), this.invaders.length) 
+            // Reduce the size of the invader grid by one column
+            this.columns = this.columns - 1
+            // Refresh the width of the grid
+            this.width = this.columns * 20
+
             console.log('FINAL COLUMN CLEARED',)
-            console.log("🚀 ~ invaderGrid ~ update ~ columns:", this.columns)
-            console.log("🚀 ~ invaderGrid ~ update ~ this.width:", this.width)
-            console.log("🚀 ~ invaderGrid ~ update ~ invaders:", this.invaders)
-            console.log("🚀 ~ invaderGrid ~ update ~ xpos:", this.xpos)
         }
 
         // Each time the grid hits the side of the canvas
@@ -378,7 +378,7 @@ function collisionDetection() {
 
                 // console.log('grids[0].invaders', grids[0].invaders)
                 // console.log('grids[0].invaders[i]',grids[0].invaders[i])
-                console.log('invader array', grids[0].invaders)
+                // console.log('invader array', grids[0].invaders)
             } else {
                 // NO COLLISION
                 // grids[0].invaders[i].alive = true
@@ -459,19 +459,6 @@ function display() {
             
         })
     })
-
-
-// Create shallow array
-// start at index 0, end at index (number of rows)
-// for each item is alive in the shallow array?
-// If EVERY item meets the condition
-// remove items start at index 0, end at index (number of rows)
-
-    // grids[0].invaders.slice(0, grids[0].rows).every(x => !x.alive) 
-    //     ? 
-    //     // grids[0].invaders.splice(0, grids[0].rows) 
-    //     console.log('SLICE',)
-    //     : console.log('NO SLICE',)
 
 
     collisionDetection()
